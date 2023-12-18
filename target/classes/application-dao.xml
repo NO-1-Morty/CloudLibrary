@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+ 	       http://www.springframework.org/schema/beans
+ 	       http://www.springframework.org/schema/beans/spring-beans.xsd
+ 	       http://www.springframework.org/schema/context
+ 	       http://www.springframework.org/schema/context/spring-context.xsd
+ 	">
+
+    <!-- 配置分页插件-->
+    <bean id="pageIntercepter" class="com.github.pagehelper.PageInterceptor">
+        <property name="properties" value="true"/>
+    </bean>
+    <!--引入属性文件-->
+    <context:property-placeholder location="classpath:druid.properties"/>
+    <!--数据源-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${druid.driverClassName}"/>
+        <property name="url" value="${druid.url}"/>
+        <property name="username" value="${druid.username}"/>
+        <property name="password" value="${druid.password}"/>
+    </bean>
+    <!--创建SqlSessionFactory对象-->
+    <bean id="sqlSessionFactory"
+          class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--数据源-->
+        <property name="dataSource" ref="dataSource"/>
+        <!--分页插件-->
+        <property name="plugins" ref="pageIntercepter"/>
+        <!--为实体类起别名-->
+        <property name="typeAliasesPackage" value="com.itheima.domain"/>
+    </bean>
+    <!--扫描Dao包，创建动态代理对象, 会自动存储到spring IOC容器中-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--指定要扫描的dao的包-->
+        <property name="basePackage" value="com.itheima.dao"/>
+    </bean>
+
+
+</beans>

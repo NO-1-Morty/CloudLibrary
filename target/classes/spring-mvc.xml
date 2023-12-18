@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       	    http://www.springframework.org/schema/beans/spring-beans.xsd
+       	    http://www.springframework.org/schema/mvc
+       	    http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       	    http://www.springframework.org/schema/context
+       	    http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 配置要扫描的包 -->
+    <context:component-scan base-package="com.itheima.controller"/>
+    <!-- 配置注解驱动 -->
+    <mvc:annotation-driven/>
+    <!--开启对静态资源的访问-->
+    <mvc:default-servlet-handler/>
+    <!--    配置静态资源访问映射，此配置中的文件将不被前端控制器拦截-->
+    <!--    <mvc:resources mapping="/js/**" location="/js/"/>-->
+
+    <!--配置视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/admin/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    <!--配置拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--配置拦截器作用的路径-->
+            <mvc:mapping path="/**"/>
+            <!--配置不需要拦截器作用的路径-->
+            <mvc:exclude-mapping path="/css/**"/>
+            <mvc:exclude-mapping path="/js/**"/>
+            <mvc:exclude-mapping path="/img/**"/>
+            <!--对匹配路径的请求才能进行拦截-->
+            <bean class="com.itheima.Interceptor.ResourcesInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <context:property-placeholder ignore-unresolvable="true" location="classpath:ignoreUrl.properties"/>
+    <context:component-scan base-package="com.itheima.Interceptor"/>
+
+</beans>
